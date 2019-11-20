@@ -38,6 +38,7 @@ app.locals.films = [
 
 app.get('/api/v1/films', (request, response) => {
 	const { films } = app.locals;
+
 	response.json({ films });
 });
 
