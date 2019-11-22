@@ -5,6 +5,10 @@ app.set('port', process.env.PORT || 3000);
 app.use(express.json());
 app.use(express.static('public'));
 
+const environment = process.env.NODE_ENV || 'development';
+const configuration = require('./knexfile')[environment];
+const database = require('knex')(configuration);
+
 app.locals.title = 'Film Directors';
 app.locals.films = [
 	{
@@ -37,9 +41,14 @@ app.locals.films = [
 ];
 
 app.get('/api/v1/films', (request, response) => {
-	const { films } = app.locals;
-
-	response.json({ films });
+	database('films')
+		.select()
+		.then(films => {
+			response.status(200).json(films);
+		})
+		.catch(error => {
+			response.status(500).json({ error });
+		});
 });
 
 app.listen(app.get('port'), () => {
