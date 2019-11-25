@@ -72,6 +72,27 @@ app.delete('/api/v1/directors/:id', (request, response) => {
 		});
 });
 
+app.post('/api/v1/films', (request, response) => {
+	const film = request.body;
+	console.log(film);
+	for (let requiredParameter of ['title', 'production_year']) {
+		if (!film[requiredParameter]) {
+			return response.status(422).send({
+				error: `Expected format: { title: <String>, production_year: <Integer> }. You're missing a "${requiredParameter}" property.`
+			});
+		}
+	}
+
+	database('films')
+		.insert(film, 'id')
+		.then(film => {
+			response.status(201).json({ id: film[0] });
+		})
+		.catch(error => {
+			response.status(500).json({ error });
+		});
+});
+
 app.listen(app.get('port'), () => {
 	console.log(
 		`${app.locals.title} is running on http://localhost:${app.get('port')}.`
