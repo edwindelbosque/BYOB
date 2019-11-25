@@ -12,20 +12,14 @@ const createFilm = (knex, film) => {
 		.then(filmId => {
 			let directorPromises = [];
 
-			film.directors.forEach(director => {
-				directorPromises.push(
-					createDirector(
-						knex,
-						{
-							first_name: director.first_name,
-							first_name: director.last_name,
-							film_id: filmId[0]
-						},
-						'id'
-					)
-				);
-			});
-
+			directorPromises.push(
+				createDirector(knex, {
+					first_name: film.director.split(' ')[1],
+					last_name: film.director.split(' ')[0].replace(',', ''),
+					film_id: filmId[0]
+				}),
+				'id'
+			);
 			return Promise.all(directorPromises);
 		});
 };
@@ -45,7 +39,7 @@ exports.seed = knex => {
 				filmPromises.push(createFilm(knex, film));
 			});
 
-			return Promise.all(filmsPromises);
+			return Promise.all(filmPromises);
 		})
 		.catch(error => console.log(`Error seeding data: ${error}`));
 };
