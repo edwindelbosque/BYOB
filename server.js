@@ -59,6 +59,19 @@ app.get('/api/v1/films/:id', (request, response) => {
 		});
 });
 
+app.delete('/api/v1/directors/:id', (request, response) => {
+	const { id } = request.params;
+	database('directors')
+		.where({ id: id })
+		.del()
+		.then(directors => {
+			response.status(201).json({ directors });
+		})
+		.catch(error => {
+			response.status(422).json({ error });
+		});
+});
+
 app.listen(app.get('port'), () => {
 	console.log(
 		`${app.locals.title} is running on http://localhost:${app.get('port')}.`
