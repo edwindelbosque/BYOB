@@ -1,15 +1,22 @@
 const express = require('express');
 const app = express();
 
+const cors = require('cors');
 app.set('port', process.env.PORT || 3000);
 app.use(express.json());
-app.use(express.static('public'));
+app.use(cors());
 
 const environment = process.env.NODE_ENV || 'development';
 const configuration = require('./knexfile')[environment];
 const database = require('knex')(configuration);
 
-app.locals.title = 'Film Directors';
+app.locals.title = 'Film & Movies';
+
+app.get('/', (request, response) => {
+	response.send(
+		'Please visit https://github.com/edwindelbosque/BYOB for documentation'
+	);
+});
 
 app.get('/api/v1/films', (request, response) => {
 	database('films')
@@ -94,10 +101,10 @@ app.post('/api/v1/films', (request, response) => {
 
 app.post('/api/v1/directors', (request, response) => {
 	const director = request.body;
-	for (let requiredParameter of ['first_name', 'last_name', 'film_id']) {
+	for (let requiredParameter of ['first_name', 'last_name']) {
 		if (!director[requiredParameter]) {
-			return response.status(422).send({
-				error: `Expected format: { first_name: <String>, last_name: <String>, film_id: <Integer> }. You're missing a "${requiredParameter}" property.`
+			return response.status(422).json({
+				error: `Expected format: { first_name: <String>, last_name: <String> }. You're missing a "${requiredParameter}" property.`
 			});
 		}
 	}
