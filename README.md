@@ -31,3 +31,5 @@ I built this project with the intention of getting more comfortable with buildin
 ## Project Management Tool: ClubHouse.io
 
 <img width="1440" alt="Screen Shot 2019-11-25 at 4 56 43 AM" src="https://user-images.githubusercontent.com/48811985/69538647-b11b3b00-0f7a-11ea-938d-eae3c16a54a1.png">
+
+link to ClubHouse [here](https://app.clubhouse.io/edwindelbosque/stories/space/9/everything)
