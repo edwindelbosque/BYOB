@@ -11,15 +11,17 @@ const createDirector = (knex, director) => {
 		)
 		.then(directorId => {
 			let filmPromises = [];
-			filmsData.forEach(film => {
-				filmPromises.push(
-					createFilm(knex, {
-						title: film.title,
-						production_year: film.production_year,
-						director_id: directorId[0]
-					})
-				);
-			});
+			filmsData
+				.filter(film => film.director === director.director)
+				.forEach(film => {
+					filmPromises.push(
+						createFilm(knex, {
+							title: film.title,
+							production_year: film.production_year,
+							director_id: directorId[0]
+						})
+					);
+				});
 			return Promise.all(filmPromises);
 		});
 };
@@ -34,9 +36,10 @@ exports.seed = knex => {
 		.then(() => knex('directors').del())
 		.then(() => {
 			let directorPromises = [];
-
-			filmsData.forEach(director => {
-				directorPromises.push(createDirector(knex, director));
+			let directorKeys = filmsData.map(film => film.director);
+			[...new Set(directorKeys)].forEach(director => {
+				let directorInfo = filmsData.find(film => film.director === director);
+				directorPromises.push(createDirector(knex, directorInfo));
 			});
 
 			return Promise.all(directorPromises);
