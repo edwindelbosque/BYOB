@@ -71,8 +71,11 @@ app.delete('/api/v1/directors/:id', (request, response) => {
 	database('directors')
 		.where({ id: id })
 		.del()
-		.then(directors => {
-			response.status(200).json({ directors });
+		.then(results => {
+			if (results === 0) {
+				response.status(404).json(`No director with id ${id} exists.`);
+			}
+			response.status(200).json(`Director ${id} sucessfully deleted.`);
 		})
 		.catch(error => {
 			response.status(422).json({ error });
