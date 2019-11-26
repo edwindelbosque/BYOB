@@ -4,21 +4,22 @@ const createDirector = (knex, director) => {
 	return knex('directors')
 		.insert(
 			{
-				first_name: director.director.split(' ')[1],
-				last_name: director.director.split(' ')[0].replace(',', '')
+				first_name: director.director.split(',')[1],
+				last_name: director.director.split(',')[0]
 			},
 			'id'
 		)
 		.then(directorId => {
 			let filmPromises = [];
-
-			filmPromises.push(
-				createFilm(knex, {
-					title: director.title,
-					production_year: director.production_year,
-					director_id: directorId[0]
-				})
-			);
+			filmsData.forEach(film => {
+				filmPromises.push(
+					createFilm(knex, {
+						title: film.title,
+						production_year: film.production_year,
+						director_id: directorId[0]
+					})
+				);
+			});
 			return Promise.all(filmPromises);
 		});
 };
