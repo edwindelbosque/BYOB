@@ -65,7 +65,7 @@ app.delete('/api/v1/directors/:id', (request, response) => {
 		.where({ id: id })
 		.del()
 		.then(directors => {
-			response.status(201).json({ directors });
+			response.status(200).json({ directors });
 		})
 		.catch(error => {
 			response.status(422).json({ error });
@@ -94,10 +94,10 @@ app.post('/api/v1/films', (request, response) => {
 
 app.post('/api/v1/directors', (request, response) => {
 	const director = request.body;
-	for (let requiredParameter of ['first_name', 'last_name']) {
+	for (let requiredParameter of ['first_name', 'last_name', 'film_id']) {
 		if (!director[requiredParameter]) {
 			return response.status(422).send({
-				error: `Expected format: { first_name: <String>, last_name: <String>}. You're missing a "${requiredParameter}" property.`
+				error: `Expected format: { first_name: <String>, last_name: <String>, film_id: <Integer> }. You're missing a "${requiredParameter}" property.`
 			});
 		}
 	}
