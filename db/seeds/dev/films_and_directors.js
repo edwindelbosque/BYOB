@@ -1,45 +1,48 @@
 const filmsData = require('../../../filmsData');
 
-const createFilm = (knex, film) => {
-	return knex('films')
+const createDirector = (knex, director) => {
+	return knex('directors')
 		.insert(
 			{
-				title: film.title,
-				production_year: film.production_year
+				first_name: director.director.split(',')[1],
+				last_name: director.director.split(',')[0]
 			},
 			'id'
 		)
-		.then(filmId => {
-			let directorPromises = [];
-
-			directorPromises.push(
-				createDirector(knex, {
-					first_name: film.director.split(' ')[1],
-					last_name: film.director.split(' ')[0].replace(',', ''),
-					film_id: filmId[0]
-				}),
-				'id'
-			);
-			return Promise.all(directorPromises);
+		.then(directorId => {
+			let filmPromises = [];
+			filmsData
+				.filter(film => film.director === director.director)
+				.forEach(film => {
+					filmPromises.push(
+						createFilm(knex, {
+							title: film.title,
+							production_year: film.production_year,
+							director_id: directorId[0]
+						})
+					);
+				});
+			return Promise.all(filmPromises);
 		});
 };
 
-const createDirector = (knex, director) => {
-	return knex('directors').insert(director);
+const createFilm = (knex, film) => {
+	return knex('films').insert(film);
 };
 
 exports.seed = knex => {
-	return knex('directors')
+	return knex('films')
 		.del()
-		.then(() => knex('films').del())
+		.then(() => knex('directors').del())
 		.then(() => {
-			let filmPromises = [];
-
-			filmsData.forEach(film => {
-				filmPromises.push(createFilm(knex, film));
+			let directorPromises = [];
+			let directorKeys = filmsData.map(film => film.director);
+			[...new Set(directorKeys)].forEach(director => {
+				let directorInfo = filmsData.find(film => film.director === director);
+				directorPromises.push(createDirector(knex, directorInfo));
 			});
 
-			return Promise.all(filmPromises);
+			return Promise.all(directorPromises);
 		})
 		.catch(error => console.log(`Error seeding data: ${error}`));
 };
