@@ -1,5 +1,6 @@
 module.exports = {
 	development: {
+		// our developer settings
 		client: 'pg',
 		connection: {
 			filename: 'postgres://localhost/movies'
@@ -13,6 +14,7 @@ module.exports = {
 		}
 	},
 	production: {
+		// our production settings
 		client: 'pg',
 		connection: process.env.DATABASE_URL + `?ssl=true`,
 		migrations: {
