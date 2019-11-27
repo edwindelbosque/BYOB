@@ -66,6 +66,19 @@ app.get('/api/v1/films/:id', (request, response) => {
 		});
 });
 
+app.get('/api/v1/directors/:id/films', (request, response) => {
+	const { id } = request.params;
+	database('films')
+		.select()
+		.where({ director_id: id })
+		.then(film => {
+			if (!film.length) {
+				response.status(404).json(`There are no films with director id ${id}`);
+			}
+			response.status(200).json(film);
+		});
+});
+
 app.delete('/api/v1/films/:id', (request, response) => {
 	const { id } = request.params;
 	database('films')
