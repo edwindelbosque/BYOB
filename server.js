@@ -66,16 +66,16 @@ app.get('/api/v1/films/:id', (request, response) => {
 		});
 });
 
-app.delete('/api/v1/directors/:id', (request, response) => {
+app.delete('/api/v1/films/:id', (request, response) => {
 	const { id } = request.params;
-	database('directors')
+	database('films')
 		.where({ id: id })
 		.del()
 		.then(results => {
 			if (results === 0) {
-				response.status(404).json(`No director with id ${id} exists.`);
+				response.status(404).json(`No film with id ${id} exists.`);
 			}
-			response.status(200).json(`Director ${id} sucessfully deleted.`);
+			response.status(200).json(`Film ${id} sucessfully deleted.`);
 		})
 		.catch(error => {
 			response.status(422).json({ error });
